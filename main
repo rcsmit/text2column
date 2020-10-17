@@ -1,0 +1,62 @@
+Sub texttocolumn()
+'
+' texttocolumn Macro
+' https://excelmacromastery.com/excel-vba-range-cells/
+
+' Voor als je data als volgt is
+'
+' Mickey Mouse
+' Mainstreet USA
+' Paris
+' evening shift
+'
+' Donald Duck
+' Frontierland
+' Japan
+' Breakfast
+' 
+' Daisy Duck
+' ...etc...
+'
+
+r = 40 'aantal records
+c = 5 'aantal columns (incl evt tussenregel)
+
+huidigeregel = 1
+huidigekolom = 1
+rijenteller = 1  'teller om de regelnummer toe te voegen zodat je makkelijk kan sorteren aan het eind
+
+For a = 1 To r * c
+    Cells(a, 1).Select
+    Selection.Cut
+    Cells(huidigeregel, huidigekolom).Select
+    ActiveSheet.Paste
+    huidigekolom = huidigekolom + 1
+    If huidigekolom > c Then
+        Cells(huidigeregel, huidigekolom).Select
+        ActiveSheet.Cells(huidigeregel, huidigekolom).Value = rijenteller
+        huidigekolom = 1
+        huidigeregel = huidigeregel + c
+        rijenteller = rijenteller + 1
+        
+    End If
+Next
+    
+'YOU HAVE TO CHANGE THE RANGE MANUALLY HERE !!!!
+
+    Cells.Select
+    ActiveWorkbook.Worksheets("Blad2").Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("Blad2").Sort.SortFields.Add2 Key:=Range("F1:F200") _
+        , SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+    With ActiveWorkbook.Worksheets("Blad2").Sort
+        .SetRange Range("A1:F200")
+        .Header = xlGuess
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+    
+    
+End Sub
+
